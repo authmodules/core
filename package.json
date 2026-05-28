@@ -1,0 +1,42 @@
+{
+  "name": "@authmodules/core",
+  "version": "0.1.0",
+  "description": "Headless identity orchestration core for TypeScript apps.",
+  "type": "module",
+  "private": false,
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "npm@11.16.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build && npm run pack:dry",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "pack:dry": "npm pack --dry-run",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.0.0"
+  }
+}
