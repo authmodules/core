@@ -11,7 +11,14 @@ integration packages remain outside this repository.
 
 ## Installation
 
-After the package is available from the npm registry:
+`@authmodules/core` is published to the GitHub Packages npm registry. Consumers
+must configure the `@authmodules` scope before installing:
+
+```sh
+npm config set @authmodules:registry https://npm.pkg.github.com
+```
+
+After the package is available from GitHub Packages:
 
 ```sh
 npm install @authmodules/core
@@ -172,8 +179,22 @@ Prerequisites:
 
 - Node.js 24 or newer;
 - npm;
-- an npm account with publish access to the `@authmodules` scope;
+- npm authentication for `npm.pkg.github.com`;
+- a GitHub token with package publishing permissions for the `authmodules`
+  organization;
 - a clean local checkout of `main` at the commit intended for release.
+
+Do not paste tokens into issues, pull requests, chat, docs, shell history, or
+committed files. Local authentication should be configured outside the
+repository. If a local `.npmrc` is used, it must not be committed with a real
+token.
+
+The package metadata targets the GitHub Packages npm registry through
+`publishConfig.registry`:
+
+```text
+https://npm.pkg.github.com
+```
 
 Run the local release checks before tagging or publishing:
 
@@ -209,13 +230,13 @@ git push origin v0.1.0
 Pushing `v0.1.0` triggers the existing release verification workflow. The
 workflow checks out the tagged commit, installs dependencies with `npm ci` on
 Node.js 24, runs `npm run check`, and runs `npm pack --dry-run`. It does not
-publish to npm.
+publish the package.
 
 After the tag verification workflow succeeds and the package contents have been
 reviewed, publish manually:
 
 ```sh
-npm publish --access public
+npm publish
 ```
 
 The release intentionally does not automate npm tokens, trusted publishing,

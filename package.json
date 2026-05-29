@@ -20,6 +20,9 @@
   },
   "type": "module",
   "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "engines": {
     "node": ">=24"
   },
