@@ -32,6 +32,7 @@ Current public exports:
 - `TokenHash`, `TokenHasher`, `TokenHasherResult`, `TokenHasherError`, `TokenHasherErrorCode`, `TokenVerificationInput`
 - `AuthStore`, `AuthStoreResult`, `AuthStoreError`, `AuthStoreErrorCode`, `AuthStoreIdentityLookup`, `AuthStoreSessionRecord`
 - `getSession`, `GetSessionInput`, `GetSessionDependencies`, `GetSessionOutput`, `GetSessionResult`, `GetSessionError`, `GetSessionErrorCode`
+- `revokeSession`, `RevokeSessionInput`, `RevokeSessionDependencies`, `RevokeSessionOutput`, `RevokeSessionResult`, `RevokeSessionError`, `RevokeSessionErrorCode`
 - `signInWithIdentity`, `SignInWithIdentityInput`, `SignInWithIdentityDependencies`, `SignInWithIdentityOutput`, `SignInWithIdentityResult`, `SignInWithIdentityError`, `SignInWithIdentityErrorCode`
 
 Only symbols exported from `src/index.ts` and exposed through the package root

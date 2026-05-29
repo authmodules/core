@@ -54,6 +54,15 @@ export type {
   GetSessionOutput,
   GetSessionResult,
 } from "./use-cases/get-session.js";
+export { revokeSession } from "./use-cases/revoke-session.js";
+export type {
+  RevokeSessionDependencies,
+  RevokeSessionError,
+  RevokeSessionErrorCode,
+  RevokeSessionInput,
+  RevokeSessionOutput,
+  RevokeSessionResult,
+} from "./use-cases/revoke-session.js";
 export { signInWithIdentity } from "./use-cases/sign-in-with-identity.js";
 export type {
   SignInWithIdentityDependencies,
