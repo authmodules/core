@@ -1,60 +1,230 @@
 # AuthModules Core
 
-AuthModules Core is the headless identity orchestration core for TypeScript apps.
-It is the framework-agnostic package that will hold stable domain contracts for
-the `@authmodules/*` package family.
+`@authmodules/core` is a headless TypeScript package for authentication domain
+entities, ports, use cases, and test helpers. It provides the current core
+contracts for the AuthModules 0.1.0 baseline without choosing an HTTP framework,
+storage backend, provider SDK, UI, or deployment model.
 
-This package is the first minimal baseline for `@authmodules/core` 0.1.0. It
-currently exposes the root package marker and initial headless domain entities
-while ports and use cases are added through focused follow-up issues.
+The package is intentionally small. It is useful for building and testing auth
+flows around current domain boundaries, while runtime adapters and production
+integration packages remain outside this repository.
+
+## Installation
+
+After the package is available from the npm registry:
+
+```sh
+npm install @authmodules/core
+```
+
+`@authmodules/core` requires Node.js 24 or newer and is published as an ESM
+package.
 
 ## Public API
 
-The public API is the root package entrypoint:
+The supported public API is the root package entrypoint:
 
 ```ts
 import {
-  AUTHMODULES_CORE_PACKAGE,
-  createIdentity,
-  createSession,
-  createUser,
+  createInMemoryTestingKit,
+  getSession,
+  revokeSession,
+  signInWithIdentity,
 } from "@authmodules/core";
 ```
 
-Current public exports:
+Only symbols exported from `src/index.ts` and exposed through the package root
+export are public. Deep imports from `src`, `dist`, or internal modules are not
+supported. Subpath imports are not available unless they are explicitly added to
+`package.json` in a future release.
 
-- `AUTHMODULES_CORE_PACKAGE`
+### Entities
+
 - `User`, `UserId`, `CreateUserInput`, `createUser`, `createUserId`
 - `Identity`, `IdentityId`, `IdentityProvider`, `IdentitySubject`, `CreateIdentityInput`, `createIdentity`, `createIdentityId`, `createIdentityProvider`, `createIdentitySubject`
 - `Session`, `SessionId`, `CreateSessionInput`, `createSession`, `createSessionId`
 
-Only symbols exported from `src/index.ts` and exposed through the package root
-export are public. Deep imports from `src`, `dist`, or any internal module are
-unsupported. Subpath imports are not available unless they are explicitly added
-to `package.json` in a future release.
+Entities validate identifiers and timestamps, expose defensive `Date` snapshots,
+and stay independent from persistence or transport concerns.
 
-## Core Boundary
+### Ports
 
-Core is reserved for headless contracts:
+- `AuthStore`, `AuthStoreResult`, `AuthStoreError`, `AuthStoreErrorCode`, `AuthStoreIdentityLookup`, `AuthStoreSessionRecord`
+- `Clock`
+- `IdGenerator`, `IdGeneratorResult`, `IdGeneratorError`, `IdGeneratorErrorCode`
+- `TokenHash`, `TokenHasher`, `TokenHasherResult`, `TokenHasherError`, `TokenHasherErrorCode`, `TokenVerificationInput`
 
-- domain entities and domain types;
-- framework-agnostic ports;
-- deterministic use cases;
-- public error types;
-- focused testing helpers when they are explicitly added to the public API.
+Ports describe the dependencies needed by the use cases. They do not provide
+production implementations for databases, clocks, ID generation, token hashing,
+or external services.
 
-Core does not contain runtime adapters, storage adapters, HTTP framework
-integrations, cookies, email delivery, OAuth provider SDKs, UI, deployment, or
-infrastructure logic.
+### Use Cases
 
-## Stability
+- `signInWithIdentity`, `SignInWithIdentityInput`, `SignInWithIdentityDependencies`, `SignInWithIdentityOutput`, `SignInWithIdentityResult`, `SignInWithIdentityError`, `SignInWithIdentityErrorCode`
+- `getSession`, `GetSessionInput`, `GetSessionDependencies`, `GetSessionOutput`, `GetSessionResult`, `GetSessionError`, `GetSessionErrorCode`
+- `revokeSession`, `RevokeSessionInput`, `RevokeSessionDependencies`, `RevokeSessionOutput`, `RevokeSessionResult`, `RevokeSessionError`, `RevokeSessionErrorCode`
 
-`@authmodules/core` follows the package export map as the public boundary. During
-the 0.x series, patch releases should preserve existing public exports, while
-minor releases may refine the API before 1.0. Consumers should import only from
-`@authmodules/core` to stay inside the supported surface.
+The current use cases sign in with an already verified identity, load an active
+session by token, and revoke an active session by token. Provider-specific
+verification, request parsing, cookies, and response handling are adapter
+responsibilities outside this package.
 
-## Runtime Baseline
+### Testing Kit
 
-`@authmodules/core` requires Node.js 24 or newer and is published as an ESM
-package.
+- `InMemoryAuthStore`, `InMemoryAuthStoreSeed`
+- `FixedClock`
+- `SequentialIdGenerator`
+- `DeterministicTokenHasher`
+- `createInMemoryTestingKit`, `InMemoryTestingKit`, `InMemoryTestingKitOptions`
+
+The in-memory testing kit is for unit tests, examples, and development fixtures.
+It is deterministic by design, exposes in-memory arrays for inspection, and uses
+predictable token hashes. It is not a production storage adapter or token hashing
+implementation.
+
+## Example
+
+```ts
+import {
+  createInMemoryTestingKit,
+  getSession,
+  revokeSession,
+  signInWithIdentity,
+} from "@authmodules/core";
+
+const kit = createInMemoryTestingKit({
+  now: new Date("2026-01-01T00:00:00.000Z"),
+});
+
+const signInResult = await signInWithIdentity(
+  {
+    provider: "email",
+    subject: "user@example.com",
+    sessionDurationMs: 60 * 60 * 1000,
+  },
+  kit,
+);
+
+if (!signInResult.ok) {
+  throw new Error(signInResult.error.message);
+}
+
+const sessionToken = signInResult.value.sessionToken;
+
+const sessionResult = await getSession({ sessionToken }, kit);
+
+if (!sessionResult.ok) {
+  throw new Error(sessionResult.error.message);
+}
+
+const revokeResult = await revokeSession({ sessionToken }, kit);
+
+if (!revokeResult.ok) {
+  throw new Error(revokeResult.error.message);
+}
+```
+
+This example uses the testing kit so it can run without external dependencies.
+Production applications should provide their own implementations for the public
+ports.
+
+## Headless Boundary
+
+`@authmodules/core` does not contain:
+
+- HTTP handlers, request parsing, or response helpers;
+- cookies or session transport logic;
+- framework adapters;
+- database or production storage adapters;
+- UI;
+- OAuth provider SDKs, email delivery, password login, or OTP delivery;
+- deployment, hosting, or release automation.
+
+Those concerns belong in future adapter, provider, application, or workflow
+packages when they are tracked by focused issues.
+
+## Development
+
+Install dependencies with npm:
+
+```sh
+npm ci
+```
+
+Available local checks:
+
+```sh
+npm run check
+npm pack --dry-run
+```
+
+`npm run check` runs format checking, linting, type checking, tests, build, and
+the package dry run. `npm pack --dry-run` can also be run directly when checking
+the package contents.
+
+## Release Preparation
+
+The `@authmodules/core@0.1.0` release is prepared manually after the release
+pull request has been reviewed, merged, and verified on `main`. The repository
+does not currently publish from GitHub Actions.
+
+Prerequisites:
+
+- Node.js 24 or newer;
+- npm;
+- an npm account with publish access to the `@authmodules` scope;
+- a clean local checkout of `main` at the commit intended for release.
+
+Run the local release checks before tagging or publishing:
+
+```sh
+npm ci
+npm run check
+npm pack --dry-run
+```
+
+`npm run check` must pass before publication. It runs formatting checks, linting,
+type checking, tests, the package build, and the package dry run. The direct
+`npm pack --dry-run` command is kept as an explicit final package contents
+review.
+
+The expected package dry run for `0.1.0` should include only the built package
+entrypoint, type declarations, source map, package metadata, and this README:
+
+```text
+README.md
+dist/index.d.ts
+dist/index.js
+dist/index.js.map
+package.json
+```
+
+The release tag for the first package release is expected to be `v0.1.0`:
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Pushing `v0.1.0` triggers the existing release verification workflow. The
+workflow checks out the tagged commit, installs dependencies with `npm ci` on
+Node.js 24, runs `npm run check`, and runs `npm pack --dry-run`. It does not
+publish to npm.
+
+After the tag verification workflow succeeds and the package contents have been
+reviewed, publish manually:
+
+```sh
+npm publish --access public
+```
+
+The release intentionally does not automate npm tokens, trusted publishing,
+semantic-release, Changesets, changelog generation, release notes generation, or
+adapter package publication yet.
+
+## Status
+
+`@authmodules/core` is currently a focused 0.1.0 baseline. It documents and
+exports the implemented headless core surface only. It does not claim production
+readiness, release automation, adapter availability, persistence guarantees, or
+service-level guarantees.
