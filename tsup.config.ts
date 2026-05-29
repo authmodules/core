@@ -1,5 +1,6 @@
 import { defineConfig } from "tsup";
 
+// noinspection JSUnusedGlobalSymbols
 export default defineConfig({
   clean: true,
   dts: true,
