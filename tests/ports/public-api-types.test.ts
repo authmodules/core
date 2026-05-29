@@ -4,6 +4,9 @@ import type {
   AuthStore,
   AuthStoreResult,
   Clock,
+  GetSessionDependencies,
+  GetSessionInput,
+  GetSessionResult,
   IdGenerator,
   IdGeneratorResult,
   Identity,
@@ -62,6 +65,33 @@ describe("@authmodules/core port contracts", () => {
     expectTypeOf<AuthStore["findSessionByTokenHash"]>().parameter(0).toEqualTypeOf<TokenHash>();
     expectTypeOf<AuthStore["findSessionByTokenHash"]>().returns.resolves.toEqualTypeOf<
       AuthStoreResult<Session | null>
+    >();
+  });
+
+  it("exposes the getSession use case contract", () => {
+    expectTypeOf<GetSessionInput>().toEqualTypeOf<{
+      readonly sessionToken: string;
+    }>();
+    expectTypeOf<GetSessionDependencies>().toEqualTypeOf<{
+      readonly store: AuthStore;
+      readonly clock: Clock;
+      readonly tokenHasher: TokenHasher;
+    }>();
+    expectTypeOf<GetSessionResult>().toMatchTypeOf<
+      | {
+          readonly ok: true;
+          readonly value: {
+            readonly session: Session;
+          };
+        }
+      | {
+          readonly ok: false;
+          readonly error: {
+            readonly code: string;
+            readonly message: string;
+            readonly cause?: unknown;
+          };
+        }
     >();
   });
 
