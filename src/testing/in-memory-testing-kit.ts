@@ -221,16 +221,64 @@ export function createInMemoryTestingKit(
   return {
     store: new InMemoryAuthStore(options),
     clock: new FixedClock(options.now ?? new Date("2026-01-01T00:00:00.000Z")),
-    userIdGenerator: new SequentialIdGenerator<UserId>("user_"),
-    identityIdGenerator: new SequentialIdGenerator<Identity["id"]>("identity_"),
-    sessionIdGenerator: new SequentialIdGenerator<SessionId>("session_"),
-    sessionTokenGenerator: new SequentialIdGenerator<string>("session_token_"),
+    userIdGenerator: new SequentialIdGenerator<UserId>(
+      "user_",
+      nextSequenceStart(
+        "user_",
+        (options.users ?? []).map((user) => user.id),
+      ),
+    ),
+    identityIdGenerator: new SequentialIdGenerator<Identity["id"]>(
+      "identity_",
+      nextSequenceStart(
+        "identity_",
+        (options.identities ?? []).map((identity) => identity.id),
+      ),
+    ),
+    sessionIdGenerator: new SequentialIdGenerator<SessionId>(
+      "session_",
+      nextSequenceStart(
+        "session_",
+        (options.sessions ?? []).map((record) => record.session.id),
+      ),
+    ),
+    sessionTokenGenerator: new SequentialIdGenerator<string>(
+      "session_token_",
+      nextSequenceStart(
+        "session_token_",
+        (options.sessions ?? []).map((record) =>
+          String(record.tokenHash).startsWith("test-token-hash:")
+            ? String(record.tokenHash).slice("test-token-hash:".length)
+            : "",
+        ),
+      ),
+    ),
     tokenHasher: new DeterministicTokenHasher(),
   };
 }
 
 function createDeterministicTokenHash(token: string): TokenHash {
   return `test-token-hash:${token}` as TokenHash;
+}
+
+function nextSequenceStart(prefix: string, values: readonly string[]): number {
+  let highest = 0;
+
+  for (const value of values) {
+    if (!value.startsWith(prefix)) {
+      continue;
+    }
+
+    const suffix = value.slice(prefix.length);
+
+    if (!/^[1-9][0-9]*$/.test(suffix)) {
+      continue;
+    }
+
+    highest = Math.max(highest, Number(suffix));
+  }
+
+  return highest + 1;
 }
 
 function success<Value>(value: Value): {

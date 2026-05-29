@@ -281,4 +281,59 @@ describe("createInMemoryTestingKit", () => {
 
     expect(revokeResult.value.session.revokedAt).toEqual(new Date("2026-01-01T00:00:00.000Z"));
   });
+
+  it("continues generated IDs after seeded testing fixtures", async () => {
+    const now = new Date("2026-01-01T00:00:00.000Z");
+    const user = createUser({
+      id: "user_1",
+      createdAt: now,
+      updatedAt: now,
+    });
+    const identity = createIdentity({
+      id: "identity_1",
+      userId: user.id,
+      provider: "github",
+      subject: "123",
+      createdAt: now,
+      updatedAt: now,
+    });
+    const session = createSession({
+      id: "session_1",
+      userId: user.id,
+      createdAt: now,
+      updatedAt: now,
+      expiresAt: new Date("2026-01-01T01:00:00.000Z"),
+    });
+    const kit = createInMemoryTestingKit({
+      now,
+      users: [user],
+      identities: [identity],
+      sessions: [
+        {
+          session,
+          tokenHash: "test-token-hash:session_token_1" as TokenHash,
+        },
+      ],
+    });
+
+    const result = await signInWithIdentity(
+      {
+        provider: "github",
+        subject: "456",
+        sessionDurationMs: 3_600_000,
+      },
+      kit,
+    );
+
+    expect(result.ok).toBe(true);
+
+    if (!result.ok) {
+      return;
+    }
+
+    expect(result.value.user.id).toBe("user_2");
+    expect(result.value.identity.id).toBe("identity_2");
+    expect(result.value.session.id).toBe("session_2" as SessionId);
+    expect(result.value.sessionToken).toBe("session_token_2");
+  });
 });
