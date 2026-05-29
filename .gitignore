@@ -1,5 +1,12 @@
-node_modules/
-dist/
-coverage/
+# Build artifacts
 *.tsbuildinfo
+dist/
+
+# Dependencies
+node_modules/
+
+# Package archives
 *.tgz
+
+# Test output
+coverage/
