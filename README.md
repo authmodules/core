@@ -5,20 +5,28 @@ It is the framework-agnostic package that will hold stable domain contracts for
 the `@authmodules/*` package family.
 
 This package is the first minimal baseline for `@authmodules/core` 0.1.0. It
-currently exposes only the root package marker while the domain model, ports,
-and use cases are added through focused follow-up issues.
+currently exposes the root package marker and initial headless domain entities
+while ports and use cases are added through focused follow-up issues.
 
 ## Public API
 
 The public API is the root package entrypoint:
 
 ```ts
-import { AUTHMODULES_CORE_PACKAGE } from "@authmodules/core";
+import {
+  AUTHMODULES_CORE_PACKAGE,
+  createIdentity,
+  createSession,
+  createUser,
+} from "@authmodules/core";
 ```
 
 Current public exports:
 
 - `AUTHMODULES_CORE_PACKAGE`
+- `User`, `UserId`, `CreateUserInput`, `createUser`, `createUserId`
+- `Identity`, `IdentityId`, `IdentityProvider`, `IdentitySubject`, `CreateIdentityInput`, `createIdentity`, `createIdentityId`, `createIdentityProvider`, `createIdentitySubject`
+- `Session`, `SessionId`, `CreateSessionInput`, `createSession`, `createSessionId`
 
 Only symbols exported from `src/index.ts` and exposed through the package root
 export are public. Deep imports from `src`, `dist`, or any internal module are
