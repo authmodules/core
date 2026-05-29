@@ -43,6 +43,10 @@ export function createSession(input: CreateSessionInput): Session {
     throw new RangeError("Session expiresAt must be greater than createdAt.");
   }
 
+  if (revokedAt !== null && revokedAt.getTime() < createdAt.getTime()) {
+    throw new RangeError("Session revokedAt must be greater than or equal to createdAt.");
+  }
+
   return Object.freeze({
     id: createSessionId(input.id),
     userId: input.userId,

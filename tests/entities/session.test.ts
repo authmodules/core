@@ -62,6 +62,19 @@ describe("Session entity", () => {
     ).toThrow(RangeError);
   });
 
+  it("rejects a session revoked before creation", () => {
+    expect(() =>
+      createSession({
+        id: "session_1",
+        userId: createUserId("user_1"),
+        createdAt: new Date("2026-01-02T00:00:00.000Z"),
+        updatedAt: new Date("2026-01-02T00:00:00.000Z"),
+        expiresAt: new Date("2026-02-01T00:00:00.000Z"),
+        revokedAt: new Date("2026-01-01T00:00:00.000Z"),
+      }),
+    ).toThrow(RangeError);
+  });
+
   it("protects stored dates from external mutation", () => {
     const session = createSession({
       id: "session_1",
