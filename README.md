@@ -18,6 +18,17 @@ must configure the `@authmodules` scope before installing:
 npm config set @authmodules:registry https://npm.pkg.github.com
 ```
 
+Consumers must also authenticate to GitHub Packages before installing. The token
+must have access to the package and should be configured outside the repository,
+for example in a user-level npm configuration:
+
+```text
+@authmodules:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Do not commit real GitHub tokens or `.npmrc` files that contain credentials.
+
 After the package is available from GitHub Packages:
 
 ```sh
@@ -238,6 +249,12 @@ reviewed, publish manually:
 ```sh
 npm publish
 ```
+
+After the first publish, verify the package visibility and package access
+settings in GitHub Packages before announcing the release or asking consumers to
+install it. If the package must be publicly consumable, set the package
+visibility to public in GitHub Packages. If it must be consumed only by selected
+repositories or organization members, grant the required access explicitly.
 
 The release intentionally does not automate npm tokens, trusted publishing,
 semantic-release, Changesets, changelog generation, release notes generation, or
