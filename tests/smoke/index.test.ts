@@ -9,6 +9,16 @@ describe("@authmodules/core public API", () => {
   });
 
   it("keeps the source entrypoint explicit", () => {
-    expect(Object.keys(core)).toEqual(["AUTHMODULES_CORE_PACKAGE"]);
+    expect(Object.keys(core)).toEqual([
+      "AUTHMODULES_CORE_PACKAGE",
+      "createIdentity",
+      "createIdentityId",
+      "createIdentityProvider",
+      "createIdentitySubject",
+      "createSession",
+      "createSessionId",
+      "createUser",
+      "createUserId",
+    ]);
   });
 });
