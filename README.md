@@ -31,6 +31,7 @@ Current public exports:
 - `IdGenerator`, `IdGeneratorResult`, `IdGeneratorError`, `IdGeneratorErrorCode`
 - `TokenHash`, `TokenHasher`, `TokenHasherResult`, `TokenHasherError`, `TokenHasherErrorCode`, `TokenVerificationInput`
 - `AuthStore`, `AuthStoreResult`, `AuthStoreError`, `AuthStoreErrorCode`, `AuthStoreIdentityLookup`, `AuthStoreSessionRecord`
+- `signInWithIdentity`, `SignInWithIdentityInput`, `SignInWithIdentityDependencies`, `SignInWithIdentityOutput`, `SignInWithIdentityResult`, `SignInWithIdentityError`, `SignInWithIdentityErrorCode`
 
 Only symbols exported from `src/index.ts` and exposed through the package root
 export are public. Deep imports from `src`, `dist`, or any internal module are

@@ -45,3 +45,12 @@ export type {
   TokenHasherResult,
   TokenVerificationInput,
 } from "./ports/token-hasher.js";
+export { signInWithIdentity } from "./use-cases/sign-in-with-identity.js";
+export type {
+  SignInWithIdentityDependencies,
+  SignInWithIdentityError,
+  SignInWithIdentityErrorCode,
+  SignInWithIdentityInput,
+  SignInWithIdentityOutput,
+  SignInWithIdentityResult,
+} from "./use-cases/sign-in-with-identity.js";
