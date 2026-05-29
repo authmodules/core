@@ -27,6 +27,10 @@ Current public exports:
 - `User`, `UserId`, `CreateUserInput`, `createUser`, `createUserId`
 - `Identity`, `IdentityId`, `IdentityProvider`, `IdentitySubject`, `CreateIdentityInput`, `createIdentity`, `createIdentityId`, `createIdentityProvider`, `createIdentitySubject`
 - `Session`, `SessionId`, `CreateSessionInput`, `createSession`, `createSessionId`
+- `Clock`
+- `IdGenerator`, `IdGeneratorResult`, `IdGeneratorError`, `IdGeneratorErrorCode`
+- `TokenHash`, `TokenHasher`, `TokenHasherResult`, `TokenHasherError`, `TokenHasherErrorCode`, `TokenVerificationInput`
+- `AuthStore`, `AuthStoreResult`, `AuthStoreError`, `AuthStoreErrorCode`, `AuthStoreIdentityLookup`, `AuthStoreSessionRecord`
 
 Only symbols exported from `src/index.ts` and exposed through the package root
 export are public. Deep imports from `src`, `dist`, or any internal module are
