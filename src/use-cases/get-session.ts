@@ -47,6 +47,10 @@ export async function getSession(
   input: GetSessionInput,
   dependencies: GetSessionDependencies,
 ): Promise<GetSessionResult> {
+  if (input.sessionToken.trim().length === 0) {
+    return failure("INVALID_SESSION_TOKEN", "Session token must be a non-empty string.");
+  }
+
   const tokenHashResult = await dependencies.tokenHasher.hashToken(input.sessionToken);
 
   if (!tokenHashResult.ok) {

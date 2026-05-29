@@ -123,7 +123,7 @@ describe("getSession", () => {
   it("maps invalid token hashing failures to session token errors", async () => {
     const result = await getSession(
       {
-        sessionToken: " ",
+        sessionToken: "malformed",
       },
       {
         ...createDependencies(new RecordingAuthStore()),
@@ -145,6 +145,29 @@ describe("getSession", () => {
         },
       },
     });
+  });
+
+  it("rejects blank session tokens before hashing", async () => {
+    const tokenHasher = recordingTokenHasher();
+
+    const result = await getSession(
+      {
+        sessionToken: " ",
+      },
+      {
+        ...createDependencies(new RecordingAuthStore()),
+        tokenHasher,
+      },
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        code: "INVALID_SESSION_TOKEN",
+        message: "Session token must be a non-empty string.",
+      },
+    });
+    expect(tokenHasher.hashTokenCalls).toEqual([]);
   });
 
   it("maps store failures to unavailable outcomes", async () => {
@@ -289,6 +312,23 @@ function fixedClock(now: Date): Clock {
   return {
     now() {
       return new Date(now.getTime());
+    },
+  };
+}
+
+function recordingTokenHasher(): TokenHasher & {
+  readonly hashTokenCalls: string[];
+} {
+  const hashTokenCalls: string[] = [];
+
+  return {
+    hashTokenCalls,
+    async hashToken(token: string): Promise<TokenHasherResult<TokenHash>> {
+      hashTokenCalls.push(token);
+      return success(`hash_${token}` as TokenHash);
+    },
+    async verifyToken(): Promise<TokenHasherResult<boolean>> {
+      return success(true);
     },
   };
 }
