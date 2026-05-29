@@ -72,3 +72,15 @@ export type {
   SignInWithIdentityOutput,
   SignInWithIdentityResult,
 } from "./use-cases/sign-in-with-identity.js";
+export {
+  DeterministicTokenHasher,
+  FixedClock,
+  InMemoryAuthStore,
+  SequentialIdGenerator,
+  createInMemoryTestingKit,
+} from "./testing/in-memory-testing-kit.js";
+export type {
+  InMemoryAuthStoreSeed,
+  InMemoryTestingKit,
+  InMemoryTestingKitOptions,
+} from "./testing/in-memory-testing-kit.js";
