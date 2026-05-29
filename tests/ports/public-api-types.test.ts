@@ -11,6 +11,9 @@ import type {
   IdentitySubject,
   Session,
   SessionId,
+  SignInWithIdentityDependencies,
+  SignInWithIdentityInput,
+  SignInWithIdentityResult,
   TokenHash,
   TokenHasher,
   TokenHasherResult,
@@ -59,6 +62,42 @@ describe("@authmodules/core port contracts", () => {
     expectTypeOf<AuthStore["findSessionByTokenHash"]>().parameter(0).toEqualTypeOf<TokenHash>();
     expectTypeOf<AuthStore["findSessionByTokenHash"]>().returns.resolves.toEqualTypeOf<
       AuthStoreResult<Session | null>
+    >();
+  });
+
+  it("exposes the signInWithIdentity use case contract", () => {
+    expectTypeOf<SignInWithIdentityInput>().toEqualTypeOf<{
+      readonly provider: string;
+      readonly subject: string;
+      readonly sessionDurationMs: number;
+    }>();
+    expectTypeOf<SignInWithIdentityDependencies>().toMatchTypeOf<{
+      readonly store: AuthStore;
+      readonly clock: Clock;
+      readonly userIdGenerator: IdGenerator<UserId>;
+      readonly identityIdGenerator: IdGenerator<Identity["id"]>;
+      readonly sessionIdGenerator: IdGenerator<SessionId>;
+      readonly sessionTokenGenerator: IdGenerator<string>;
+      readonly tokenHasher: TokenHasher;
+    }>();
+    expectTypeOf<SignInWithIdentityResult>().toMatchTypeOf<
+      | {
+          readonly ok: true;
+          readonly value: {
+            readonly user: User;
+            readonly identity: Identity;
+            readonly session: Session;
+            readonly sessionToken: string;
+          };
+        }
+      | {
+          readonly ok: false;
+          readonly error: {
+            readonly code: string;
+            readonly message: string;
+            readonly cause?: unknown;
+          };
+        }
     >();
   });
 });
