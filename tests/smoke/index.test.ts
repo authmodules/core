@@ -19,6 +19,14 @@ describe("@authmodules/core public API", () => {
       "createSessionId",
       "createUser",
       "createUserId",
+      "getSession",
+      "revokeSession",
+      "signInWithIdentity",
+      "DeterministicTokenHasher",
+      "FixedClock",
+      "InMemoryAuthStore",
+      "SequentialIdGenerator",
+      "createInMemoryTestingKit",
     ]);
   });
 });

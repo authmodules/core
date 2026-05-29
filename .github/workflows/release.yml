@@ -1,22 +1,25 @@
-name: CI
+name: Release
 
 on:
-  pull_request:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
 
 jobs:
-  check:
-    name: Check
+  verify:
+    name: Verify package
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
@@ -26,3 +29,6 @@ jobs:
 
       - name: Run checks
         run: npm run check
+
+      - name: Verify package contents
+        run: npm pack --dry-run
