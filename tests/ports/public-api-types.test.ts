@@ -12,6 +12,9 @@ import type {
   Identity,
   IdentityProvider,
   IdentitySubject,
+  RevokeSessionDependencies,
+  RevokeSessionInput,
+  RevokeSessionResult,
   Session,
   SessionId,
   SignInWithIdentityDependencies,
@@ -78,6 +81,33 @@ describe("@authmodules/core port contracts", () => {
       readonly tokenHasher: TokenHasher;
     }>();
     expectTypeOf<GetSessionResult>().toMatchTypeOf<
+      | {
+          readonly ok: true;
+          readonly value: {
+            readonly session: Session;
+          };
+        }
+      | {
+          readonly ok: false;
+          readonly error: {
+            readonly code: string;
+            readonly message: string;
+            readonly cause?: unknown;
+          };
+        }
+    >();
+  });
+
+  it("exposes the revokeSession use case contract", () => {
+    expectTypeOf<RevokeSessionInput>().toEqualTypeOf<{
+      readonly sessionToken: string;
+    }>();
+    expectTypeOf<RevokeSessionDependencies>().toEqualTypeOf<{
+      readonly store: AuthStore;
+      readonly clock: Clock;
+      readonly tokenHasher: TokenHasher;
+    }>();
+    expectTypeOf<RevokeSessionResult>().toMatchTypeOf<
       | {
           readonly ok: true;
           readonly value: {
