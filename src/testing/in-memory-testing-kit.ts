@@ -211,7 +211,7 @@ export interface InMemoryTestingKit extends SignInWithIdentityDependencies {
   readonly userIdGenerator: SequentialIdGenerator<UserId>;
   readonly identityIdGenerator: SequentialIdGenerator<Identity["id"]>;
   readonly sessionIdGenerator: SequentialIdGenerator<SessionId>;
-  readonly sessionTokenGenerator: SequentialIdGenerator<string>;
+  readonly sessionTokenGenerator: SequentialIdGenerator;
   readonly tokenHasher: DeterministicTokenHasher;
 }
 
@@ -242,7 +242,7 @@ export function createInMemoryTestingKit(
         (options.sessions ?? []).map((record) => record.session.id),
       ),
     ),
-    sessionTokenGenerator: new SequentialIdGenerator<string>(
+    sessionTokenGenerator: new SequentialIdGenerator(
       "session_token_",
       nextSequenceStart(
         "session_token_",

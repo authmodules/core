@@ -49,7 +49,9 @@ describe("@authmodules/core port contracts", () => {
   });
 
   it("exposes token hashing without a crypto implementation", () => {
-    expectTypeOf<TokenHasher["hashToken"]>().parameter(0).toEqualTypeOf<string>();
+    expectTypeOf<TokenHasher["hashToken"]>()
+      .parameter(0)
+      .toEqualTypeOf("" as string);
     expectTypeOf<TokenHasher["hashToken"]>().returns.resolves.toEqualTypeOf<
       TokenHasherResult<TokenHash>
     >();
@@ -142,7 +144,7 @@ describe("@authmodules/core port contracts", () => {
       readonly userIdGenerator: IdGenerator<UserId>;
       readonly identityIdGenerator: IdGenerator<Identity["id"]>;
       readonly sessionIdGenerator: IdGenerator<SessionId>;
-      readonly sessionTokenGenerator: IdGenerator<string>;
+      readonly sessionTokenGenerator: IdGenerator;
       readonly tokenHasher: TokenHasher;
     }>();
     expectTypeOf<SignInWithIdentityResult>().toMatchTypeOf<

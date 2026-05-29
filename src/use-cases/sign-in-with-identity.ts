@@ -38,7 +38,7 @@ export interface SignInWithIdentityDependencies {
   readonly userIdGenerator: IdGenerator<UserId>;
   readonly identityIdGenerator: IdGenerator<IdentityId>;
   readonly sessionIdGenerator: IdGenerator<SessionId>;
-  readonly sessionTokenGenerator: IdGenerator<string>;
+  readonly sessionTokenGenerator: IdGenerator;
   readonly tokenHasher: TokenHasher;
 }
 
