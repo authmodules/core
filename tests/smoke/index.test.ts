@@ -19,6 +19,7 @@ describe("@authmodules/core public API", () => {
       "createSessionId",
       "createUser",
       "createUserId",
+      "getSession",
       "signInWithIdentity",
     ]);
   });

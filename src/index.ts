@@ -45,6 +45,15 @@ export type {
   TokenHasherResult,
   TokenVerificationInput,
 } from "./ports/token-hasher.js";
+export { getSession } from "./use-cases/get-session.js";
+export type {
+  GetSessionDependencies,
+  GetSessionError,
+  GetSessionErrorCode,
+  GetSessionInput,
+  GetSessionOutput,
+  GetSessionResult,
+} from "./use-cases/get-session.js";
 export { signInWithIdentity } from "./use-cases/sign-in-with-identity.js";
 export type {
   SignInWithIdentityDependencies,
