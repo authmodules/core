@@ -162,6 +162,66 @@ npm pack --dry-run
 the package dry run. `npm pack --dry-run` can also be run directly when checking
 the package contents.
 
+## Release Preparation
+
+The `@authmodules/core@0.1.0` release is prepared manually after the release
+pull request has been reviewed, merged, and verified on `main`. The repository
+does not currently publish from GitHub Actions.
+
+Prerequisites:
+
+- Node.js 24 or newer;
+- npm;
+- an npm account with publish access to the `@authmodules` scope;
+- a clean local checkout of `main` at the commit intended for release.
+
+Run the local release checks before tagging or publishing:
+
+```sh
+npm ci
+npm run check
+npm pack --dry-run
+```
+
+`npm run check` must pass before publication. It runs formatting checks, linting,
+type checking, tests, the package build, and the package dry run. The direct
+`npm pack --dry-run` command is kept as an explicit final package contents
+review.
+
+The expected package dry run for `0.1.0` should include only the built package
+entrypoint, type declarations, source map, package metadata, and this README:
+
+```text
+README.md
+dist/index.d.ts
+dist/index.js
+dist/index.js.map
+package.json
+```
+
+The release tag for the first package release is expected to be `v0.1.0`:
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Pushing `v0.1.0` triggers the existing release verification workflow. The
+workflow checks out the tagged commit, installs dependencies with `npm ci` on
+Node.js 24, runs `npm run check`, and runs `npm pack --dry-run`. It does not
+publish to npm.
+
+After the tag verification workflow succeeds and the package contents have been
+reviewed, publish manually:
+
+```sh
+npm publish --access public
+```
+
+The release intentionally does not automate npm tokens, trusted publishing,
+semantic-release, Changesets, changelog generation, release notes generation, or
+adapter package publication yet.
+
 ## Status
 
 `@authmodules/core` is currently a focused 0.1.0 baseline. It documents and
