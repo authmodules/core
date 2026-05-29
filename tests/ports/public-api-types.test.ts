@@ -4,17 +4,22 @@ import type {
   AuthStore,
   AuthStoreResult,
   Clock,
+  DeterministicTokenHasher,
+  FixedClock,
   GetSessionDependencies,
   GetSessionInput,
   GetSessionResult,
   IdGenerator,
   IdGeneratorResult,
+  InMemoryAuthStore,
+  InMemoryTestingKit,
   Identity,
   IdentityProvider,
   IdentitySubject,
   RevokeSessionDependencies,
   RevokeSessionInput,
   RevokeSessionResult,
+  SequentialIdGenerator,
   Session,
   SessionId,
   SignInWithIdentityDependencies,
@@ -159,5 +164,13 @@ describe("@authmodules/core port contracts", () => {
           };
         }
     >();
+  });
+
+  it("exposes testing helpers that implement the existing public ports", () => {
+    expectTypeOf<InMemoryAuthStore>().toMatchTypeOf<AuthStore>();
+    expectTypeOf<FixedClock>().toMatchTypeOf<Clock>();
+    expectTypeOf<SequentialIdGenerator<UserId>>().toMatchTypeOf<IdGenerator<UserId>>();
+    expectTypeOf<DeterministicTokenHasher>().toMatchTypeOf<TokenHasher>();
+    expectTypeOf<InMemoryTestingKit>().toMatchTypeOf<SignInWithIdentityDependencies>();
   });
 });

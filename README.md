@@ -34,6 +34,11 @@ Current public exports:
 - `getSession`, `GetSessionInput`, `GetSessionDependencies`, `GetSessionOutput`, `GetSessionResult`, `GetSessionError`, `GetSessionErrorCode`
 - `revokeSession`, `RevokeSessionInput`, `RevokeSessionDependencies`, `RevokeSessionOutput`, `RevokeSessionResult`, `RevokeSessionError`, `RevokeSessionErrorCode`
 - `signInWithIdentity`, `SignInWithIdentityInput`, `SignInWithIdentityDependencies`, `SignInWithIdentityOutput`, `SignInWithIdentityResult`, `SignInWithIdentityError`, `SignInWithIdentityErrorCode`
+- `InMemoryAuthStore`, `InMemoryAuthStoreSeed`
+- `FixedClock`
+- `SequentialIdGenerator`
+- `DeterministicTokenHasher`
+- `createInMemoryTestingKit`, `InMemoryTestingKit`, `InMemoryTestingKitOptions`
 
 Only symbols exported from `src/index.ts` and exposed through the package root
 export are public. Deep imports from `src`, `dist`, or any internal module are
@@ -53,6 +58,9 @@ Core is reserved for headless contracts:
 Core does not contain runtime adapters, storage adapters, HTTP framework
 integrations, cookies, email delivery, OAuth provider SDKs, UI, deployment, or
 infrastructure logic.
+
+The in-memory testing kit is provided for tests and development fixtures only.
+It is deterministic testing support, not a production persistence adapter.
 
 ## Stability
 
