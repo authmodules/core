@@ -2,6 +2,22 @@
   "name": "@authmodules/core",
   "version": "0.1.0",
   "description": "Headless identity orchestration core for TypeScript apps.",
+  "keywords": [
+    "auth",
+    "authentication",
+    "authmodules",
+    "headless",
+    "identity",
+    "typescript"
+  ],
+  "homepage": "https://github.com/authmodules/core#readme",
+  "bugs": {
+    "url": "https://github.com/authmodules/core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/authmodules/core.git"
+  },
   "type": "module",
   "private": false,
   "engines": {
